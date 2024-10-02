@@ -1,6 +1,7 @@
 # Variables
 CC = gcc
 CFLAGS = -Iinc -Wall -Wextra -Werror
+LDFLAGS = -lpcap  # Link the libpcap library
 SRC_DIR = src
 INC_DIR = inc
 BUILD_DIR = build
@@ -23,9 +24,9 @@ all: $(BIN_DIR) $(TARGET)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link the object files into the final binary
+# Link the object files into the final binary, including libpcap
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
 # Clean temporary files
 clean:
