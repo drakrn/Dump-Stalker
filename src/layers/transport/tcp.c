@@ -1,3 +1,15 @@
+/**
+ * @author Flavien Lallemant
+ * @file tcp.c
+ * @brief TCP layer
+ * @ingroup transport
+ * 
+ * This file contains the implementation of the TCP layer.
+ * 
+ * @see tcp.h
+ * @see cast_tcp
+ */
+
 // Global libraries
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -12,6 +24,13 @@
 #include "telnet.h"
 #include "tcp.h"
 
+/**
+ * @brief Check the flags of a TCP packet
+ * 
+ * This function checks the flags of a TCP packet.
+ * 
+ * @param tcp The TCP header
+ */
 void check_flags(const struct tcphdr *tcp)
 {
     if (tcp->th_flags & TH_FIN)
@@ -29,6 +48,24 @@ void check_flags(const struct tcphdr *tcp)
     printf("\n");
 }
 
+
+/**
+ * @brief Handle a TCP packet
+ * 
+ * This function handles a TCP packet.
+ * 
+ * @param packet The packet to handle
+ * @param tcp The TCP header
+ * @param remain_size The remaining size of the packet
+ * @return int 0 if the packet is well handled
+ * 
+ * @see is_http
+ * @see is_smtp
+ * @see is_ftp
+ * @see cast_dns
+ * @see is_pop
+ * @see telnet_handler
+ */
 int tcp_handling(const u_char *packet, const struct tcphdr *tcp,
                  int remain_size)
 {
@@ -134,6 +171,19 @@ int tcp_handling(const u_char *packet, const struct tcphdr *tcp,
     return 0;
 }
 
+
+/**
+ * @brief Cast TCP header
+ * 
+ * Get TCP header from packet.
+ * 
+ * @param packet Pointer to the packet
+ * @param remain_size Remaining size of the packet
+ * @return int 0 on success, -1 on error
+ * 
+ * @see check_flags
+ * @see tcp_handling
+ */
 int cast_tcp(const u_char *packet, int remain_size)
 {
     const struct tcphdr *tcp;

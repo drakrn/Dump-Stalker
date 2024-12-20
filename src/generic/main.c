@@ -139,6 +139,8 @@ static char *colors[NB_COLORS] = {"\033[1;31m", "\033[1;32m", "\033[1;33m", "\03
  * @param args The arguments
  * @param header The packet header
  * @param packet The packet
+ * 
+ * @see cast_ethernet
  */
 void packet_analyzer(u_char *args, const struct pcap_pkthdr *header,
                      const u_char *packet)
@@ -184,6 +186,11 @@ void packet_analyzer(u_char *args, const struct pcap_pkthdr *header,
  * @param argv The arguments
  * 
  * @return 0 if the function succeeded, 1 otherwise
+ * 
+ * @see parse_args
+ * @see search_devs
+ * @see dlt_format
+ * @see packet_analyzer
  */
 int main(int argc, char **argv)
 {

@@ -1,3 +1,15 @@
+/**
+ * @author Flavien Lallemant
+ * @file ftp.c
+ * @brief FTP Protocol Header File
+ * 
+ * This file contains the definition of the FTP layer.
+ * It provides functions to check if a packet is an FTP packet.
+ * 
+ * @see ftp.h
+ * @see is_ftp
+ */
+
 #include "ftp.h"
 #include <stdlib.h>
 #include <string.h>
@@ -10,8 +22,15 @@ const char *ftp_command[] = {
     "PASS", "PASV", "PBSZ", "PORT", "PROT", "PWD",  "QUIT", "REIN", "REST",
     "RETR", "RMD",  "RMDA", "RNFR", "RNTO", "SITE", "SIZE", "SMNT", "SPSV",
     "STAT", "STOR", "STOU", "STRU", "SYST", "THMB", "TYPE", "USER", "XCUP",
-    "XMKD", "XPWD", "XRCP", "XRMD", "XRSQ", "XSEM", "XSEN"};
+    "XMKD", "XPWD", "XRCP", "XRMD", "XRSQ", "XSEM", "XSEN"}; /**< List of FTP commands */
 
+
+/**
+ * @brief Check if the packet is an FTP command
+ * 
+ * @param packet The packet
+ * @return int 1 if the packet is an FTP command, 0 otherwise
+ */
 static int is_command(const u_char *packet)
 {
     for (int i = 0; i < 70; i++) {
@@ -23,6 +42,14 @@ static int is_command(const u_char *packet)
     return 0;
 }
 
+/**
+ * @brief Check if the packet is an FTP return code
+ * 
+ * @param packet The packet
+ * @return int 1 if the packet is an FTP return code, 0 otherwise
+ * 
+ * @note FTP return codes are in the form of 3 digits. The first two digits are between 1 and 5. The last digit is between 0 and 9.
+ */
 static int is_return_code(const u_char *packet)
 {
     char buf[4];
@@ -36,6 +63,13 @@ static int is_return_code(const u_char *packet)
     return 0;
 }
 
+
+/**
+ * @brief Check if the packet is an FTP packet
+ * 
+ * @param packet The packet
+ * @return int 1 if the packet is an FTP packet, 0 otherwise
+ */
 int is_ftp(const u_char *packet)
 {
     if (is_command(packet)) {

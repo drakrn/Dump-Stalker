@@ -11,7 +11,7 @@ SRC_FILES := $(wildcard src/generic/*.c) \
 OBJ_FILES := $(addprefix build/,$(notdir $(SRC_FILES:.c=.o)))
 
 # Output binary
-TARGET := bin/dumpstalker
+TARGET := bin/netstalker
 
 # Rules
 all: $(TARGET) docs

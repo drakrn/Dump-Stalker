@@ -1,3 +1,15 @@
+/**
+ * @author Flavien Lallemant
+ * @file ipv4.c
+ * @brief IPv4 layer
+ * @ingroup network
+ * 
+ * This file contains the implementation of the IPv4 layer.
+ * 
+ * @see ipv4.h
+ * @see cast_ipv4
+ */
+
 // Global libraries
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,9 +21,20 @@
 #include "tcp.h"
 #include "udp.h"
 
+
+/**
+ * @brief Format an IPv4 address
+ * 
+ * This function formats an IPv4 address in the format A.B.C.D.
+ * 
+ * @param ip_addr The IPv4 address to format
+ * @return char* The formatted IPv4 address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 #define STR_IPv4_ADDR_LEN 16
 static char *format_ipv4(uint32_t ip_addr)
-{ // Create an IPv4 string in the format A.B.C.D
+{
     char *res = malloc(STR_IPv4_ADDR_LEN * sizeof(char));
     if (res == NULL) {
         return NULL;
@@ -22,6 +45,19 @@ static char *format_ipv4(uint32_t ip_addr)
     return res;
 }
 
+/**
+ * @brief Handle an IPv4 packet
+ * 
+ * This function handles an IPv4 packet.
+ * 
+ * @param packet The packet to handle
+ * @param ip The IPv4 header
+ * @return int 0 if the packet is well handled
+ * @see cast_tcp
+ * @see cast_udp
+ * @see cast_icmp
+ * @see cast_ipv6
+ */
 int ip_handler(const u_char *packet, const struct iphdr *ip)
 {
     /* Print IPv4 source and destination */
@@ -54,6 +90,16 @@ int ip_handler(const u_char *packet, const struct iphdr *ip)
     return 0;
 }
 
+
+/**
+ * @brief Handle an IPv4 packet
+ * 
+ * This function handles an IPv4 packet.
+ * 
+ * @param packet The packet to handle
+ * @return int 0 if the packet is well handled
+ * @see ip_handler
+ */
 int cast_ipv4(const u_char *packet)
 {
     const struct iphdr *ip;

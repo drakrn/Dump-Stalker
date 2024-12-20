@@ -1,3 +1,15 @@
+/**
+ * @author Flavien Lallemant
+ * @file arp.c
+ * @brief ARP layer
+ * @ingroup network
+ * 
+ * This file contains the implementation of the ARP layer.
+ * 
+ * @see arp.h
+ * @see cast_arp
+ */
+
 // Global libraries
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -7,6 +19,17 @@
 // Local librairies
 #include "arp.h"
 
+
+/**
+ * @brief Format an IPv4 address
+ * 
+ * This function formats an IPv4 address in the format A.B.C.D.
+ * 
+ * @param ip_addr The IPv4 address to format
+ * @return char* The formatted IPv4 address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 #define STR_IPv4_ADDR_LEN 16
 static char *format_ipv4(uint32_t ip_addr)
 { // Create an IPv4 string in the format A.B.C.D
@@ -20,6 +43,16 @@ static char *format_ipv4(uint32_t ip_addr)
     return res;
 }
 
+/**
+ * @brief Format a MAC address
+ * 
+ * This function formats a MAC address in the format XX:XX:XX:XX:XX:XX.
+ * 
+ * @param ether_host The MAC address to format
+ * @return char* The formatted MAC address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 static char *format_mac(const u_char ether_host[ETH_ALEN])
 { // Create a MAC string in the format XX:XX:XX:XX:XX:XX
     char *res = malloc(3 * ETH_ALEN * sizeof(char));
@@ -32,6 +65,20 @@ static char *format_mac(const u_char ether_host[ETH_ALEN])
     return res;
 }
 
+
+/**
+ * @brief Get an address from an ARP packet
+ * 
+ * This function extracts an address from an ARP packet.
+ * 
+ * @param packet The packet to extract the address from
+ * @param arp The ARP header
+ * @param who The address to extract (1 for sender, 2 for target)
+ * @param type The type of address to extract (1 for MAC, 2 for IP)
+ * @return char* The extracted address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 char *getaddr(const u_char *packet, const struct arphdr *arp, int who, int type)
 {
     if (be16toh(arp->ar_pro) == ARPPTYPE_IP && arp->ar_pln == ARPPLEN_IP) {
@@ -55,20 +102,55 @@ char *getaddr(const u_char *packet, const struct arphdr *arp, int who, int type)
     return NULL;
 }
 
+/**
+ * @brief Get the sender address from an ARP packet (MAC or IP)
+ * 
+ * This function extracts the sender MAC address from an ARP packet.
+ * 
+ * @param packet The packet to extract the address from
+ * @param arp The ARP header
+ * @param type The type of address to extract (1 for MAC, 2 for IP)
+ * @return char* The extracted address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 char *getsenderaddr(const u_char *packet, const struct arphdr *arp, int type)
 {
     return getaddr(packet, arp, 1, type);
 }
 
+
+/**
+ * @brief Get the target address from an ARP packet (MAC or IP)
+ * 
+ * This function extracts the target MAC address from an ARP packet.
+ * 
+ * @param packet The packet to extract the address from
+ * @param arp The ARP header
+ * @param type The type of address to extract (1 for MAC, 2 for IP)
+ * @return char* The extracted address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 char *gettargetaddr(const u_char *packet, const struct arphdr *arp, int type)
 {
     return getaddr(packet, arp, 2, type);
 }
 
+
+/**
+ * @brief Handle an ARP packet
+ * 
+ * This function handles an ARP packet.
+ * 
+ * @param packet The packet to handle
+ * @param arp The ARP header
+ * @return int 0 if the packet is well handled, 1 otherwise
+ */
 int arp_handler(const u_char *packet, const struct arphdr *arp)
 {
-    switch (be16toh(arp->ar_op)) {
-    case ARPOP_REQUEST: {
+    switch (be16toh(arp->ar_op)) { // ARP operation code
+    case ARPOP_REQUEST: { // ARP Request
         char *TPA, *THA, *SPA, *SHA;
         TPA = gettargetaddr(packet, arp, 2);
         THA = gettargetaddr(packet, arp, 1);
@@ -92,7 +174,7 @@ int arp_handler(const u_char *packet, const struct arphdr *arp)
         free(SHA);
         break;
     }
-    case ARPOP_REPLY: {
+    case ARPOP_REPLY: { // ARP Reply
         char *TPA, *THA, *SPA, *SHA;
         TPA = gettargetaddr(packet, arp, 2);
         THA = gettargetaddr(packet, arp, 1);
@@ -121,6 +203,16 @@ int arp_handler(const u_char *packet, const struct arphdr *arp)
     return 0;
 }
 
+
+/**
+ * @brief Handle an ARP packet
+ * 
+ * This function handles an ARP packet.
+ * 
+ * @param packet The packet to handle
+ * @return int 0 if the packet is well handled
+ * @see arp_handler
+ */
 int cast_arp(const u_char *packet)
 {
     const struct arphdr *arp;

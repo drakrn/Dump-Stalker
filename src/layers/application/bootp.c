@@ -28,6 +28,9 @@
  * 
  * @param bootp BOOTP header
  * @return char* Formatted hardware address
+ * 
+ * @note This function doesn't check for all errors.
+ * @note The returned string must be freed by the caller
  */
 char *format_haddr(const struct bootphdr *bootp)
 {
@@ -223,7 +226,7 @@ void walk_vendor(const u_char *packet, uint32_t magic_cookie)
  * Get BOOTP header from packet.
  * 
  * @param packet Pointer to the packet
- * @return int 0 on success, -1 on error
+ * @return int 0 on success
  * 
  * @see bootp.h
  */

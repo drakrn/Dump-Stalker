@@ -1,3 +1,15 @@
+/**
+ * @author: Flavien Lallemant
+ * @file: ethernet.c
+ * @brief: Ethernet layer
+ * @ingroup: data_link
+ * 
+ * This file contains the implementation of the Ethernet layer.
+ * 
+ * @see ethernet.h
+ * @see cast_ethernet
+ */
+
 // Global libraries
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,8 +20,19 @@
 #include "ipv4.h"
 #include "ipv6.h"
 
+
+/**
+ * @brief Format a MAC address
+ * 
+ * This function formats a MAC address in the format XX:XX:XX:XX:XX:XX.
+ * 
+ * @param ether_host The MAC address to format
+ * @return char* The formatted MAC address
+ * 
+ * @note The returned string must be freed by the caller
+ */
 static char *format_mac(const u_char ether_host[ETH_ALEN])
-{ // Create a MAC string in the format XX:XX:XX:XX:XX:XX
+{
     char *res = malloc(3 * ETH_ALEN * sizeof(char));
     if (res == NULL)
         return NULL;
@@ -20,6 +43,20 @@ static char *format_mac(const u_char ether_host[ETH_ALEN])
     return res;
 }
 
+
+/**
+ * @brief Handle the ethertype
+ * 
+ * This function handles the ethertype of an Ethernet frame.
+ * 
+ * @param packet The packet to handle
+ * @param ethernet The Ethernet frame
+ * @return int 0 if the ethertype is well handled, 1 otherwise
+ * 
+ * @see cast_ipv4
+ * @see cast_ipv6
+ * @see cast_arp
+ */
 int ethertype_handler(const u_char *packet, const struct ether_header *ethernet)
 {
     char *mac_shost = format_mac(ethernet->ether_shost);
@@ -54,6 +91,16 @@ int ethertype_handler(const u_char *packet, const struct ether_header *ethernet)
     return 0;
 }
 
+
+/**
+ * @brief Handle an Ethernet frame
+ * 
+ * This function handles an Ethernet frame.
+ * 
+ * @param packet The packet to handle
+ * @return int 0 if the packet is well handled, -1 otherwise
+ * @see ethertype_handler
+ */
 int cast_ethernet(const u_char *packet)
 {
     const struct ether_header *ethernet;
