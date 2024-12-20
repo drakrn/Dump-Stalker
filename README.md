@@ -1,6 +1,6 @@
-# Northwind
+# NetStalker
 Yet another tcpdump.
-Northwind is a modern re-implementation of tcpdump, a powerful command-line packet analyzer tool. This project aims to provide a lightweight, efficient, and user-friendly tool for capturing and analyzing network traffic, leveraging updated technologies and enhancements.
+NetStalker is a modern re-implementation of tcpdump, a powerful command-line packet analyzer tool. This project aims to provide a lightweight, efficient, and user-friendly tool for capturing and analyzing network traffic, leveraging updated technologies and enhancements.
 
 ## Table of contents
 - [About](#about)
@@ -11,13 +11,13 @@ Northwind is a modern re-implementation of tcpdump, a powerful command-line pack
 - [Contributing](#contributing)
 
 ## About
-`Northwind` aims to re-implement the core functionality of `tcpdump` with additional modern enhancements such as:
+`NetStalker` aims to re-implement the core functionality of `tcpdump` with additional modern enhancements such as:
 
 - Improved performance with optimized packet capturing.
 - Customizable and user-friendly output formats.
 - Extensibility for additional protocols.
 
-`tcpdump` is widely used for debugging network issues, capturing and analyzing network packets, and performing security analysis. With `Northwind`, we aim to provide a fresh, efficient, and easier-to-use alternative that fits into modern networking workflows.
+`tcpdump` is widely used for debugging network issues, capturing and analyzing network packets, and performing security analysis. With `NetStalker`, we aim to provide a fresh, efficient, and easier-to-use alternative that fits into modern networking workflows.
 
 ## Features
 - **Packet capturing**: Capture network packets from a specified network interface.
@@ -35,12 +35,12 @@ Northwind is a modern re-implementation of tcpdump, a powerful command-line pack
 ### Steps
 1. Clone the repository:
 ```bash
-git clone https://github.com/drakrn/northwind.git
+git clone https://github.com/drakrn/netstalker.git
 ```
 
 2. Navigate to the project directory:
 ```bash
-cd northwind
+cd netstalker
 ```
 
 3. Build the project:
@@ -50,43 +50,43 @@ make
 
 4. Run the binary (once built):
 ```bash
-./northwind
+./netstalker
 ```
 
 5. Export the binary to your PATH (optional):
 ```bash
-sudo cp northwind /usr/local/bin
+sudo cp netstalker /usr/local/bin
 ```
 
 ## Usage
-`Northwind` captures and analyzes network traffic in real-time. Below are some examples of basic usage.
+`NetStalker` captures and analyzes network traffic in real-time. Below are some examples of basic usage.
 
 ### Capture packet on a specific interface
 ```bash
+netstalker -i eth0
 ```
 
 ### Filter traffic by host:
-```bash
-```
+See `man pcap-filter` for filter options.
 
 ### Filter traffic by port:
-```bash
-```
+See `man pcap-filter` for filter options.
 
 ### Capture only TCP packets:
-```bash
-```
+See `man pcap-filter` for filter options.
 
 ### Display verbose output:
 ```bash
+netstalker -v [1]
 ```
 
 For a full list of options, use the `--help` flag:
 ```bash
+netstalker --help
 ```
 
 ## Building from source
-To build `Northwind` from source, follow the steps below:
+To build `NetStalker` from source, follow the steps below:
 ### 1. Prerequisites
 - **C compiler**: Ensure you have a C compiler such as GCC or Clang.
 - **libpcap**: Install the `libpcap` library for packet capture. 
@@ -113,7 +113,7 @@ brew install libpcap
 ### 2. Building
 Once all dependencies are installed, you can build the project:
 ```bash
-make
+make all
 ```
 This will compile the project and place the binary output in the `bin/` directory.
 

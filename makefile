@@ -1,44 +1,53 @@
-# Variables
-CC = gcc
-CFLAGS = -Iinc -Wall -Wextra -Werror
-LDFLAGS = -lpcap  # Link the libpcap library
-SRC_DIR = src
-INC_DIR = inc
-BUILD_DIR = build
-BIN_DIR = bin
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SOURCES))
-TARGET = $(BIN_DIR)/northwind
+# Compiler and flags
+CC := gcc
+CFLAGS := -Wall -Wextra -fanalyzer -Iinc/generic -Iinc/layers/application -Iinc/layers/data_link -Iinc/layers/network -Iinc/layers/session -Iinc/layers/transport
+LDFLAGS := -lpcap
 
-# Rule to create the build and bin directories if they don't exist
-$(BUILD_DIR):
-	@mkdir -p $(BUILD_DIR)
+# Source files
+SRC_FILES := $(wildcard src/generic/*.c) \
+             $(wildcard src/layers/*/*.c)
 
-$(BIN_DIR):
-	@mkdir -p $(BIN_DIR)
+# Object files
+OBJ_FILES := $(addprefix build/,$(notdir $(SRC_FILES:.c=.o)))
 
-# Default target to build the program
-all: $(BIN_DIR) $(TARGET)
+# Output binary
+TARGET := bin/dumpstalker
 
-# Compile the object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+# Rules
+all: $(TARGET) docs
+
+rebuild: clean all
+
+$(TARGET): $(OBJ_FILES) | bin
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+# Pattern rule for building object files
+build/%.o: src/generic/%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Link the object files into the final binary, including libpcap
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+build/%.o: src/layers/application/%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean temporary files
+build/%.o: src/layers/data_link/%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build/%.o: src/layers/network/%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+build/%.o:src/layers/transport/%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Ensure the output directories exist
+bin:
+	mkdir -p $@
+
+build:
+	mkdir -p $@
+
+docs: Doxyfile
+	doxygen Doxyfile
+
+# Clean rule
 clean:
-	@rm -rf $(BUILD_DIR)
-	@echo "Cleaned up build files."
+	rm -rf build bin docs
 
-# Clean everything, including the binary
-fclean: clean
-	@rm -rf $(BIN_DIR)
-	@echo "Cleaned up all files, including binary."
-
-# Rebuild the project
-re: fclean all
-
-.PHONY: all clean fclean re
+.PHONY: all clean

@@ -2,6 +2,19 @@
     "files.associations": {
         "*.tmpl": "html",
         "*.lex": "lex",
-        "pcap.h": "c"
+        "string.h": "c",
+        "icmp.h": "c",
+        "http.h": "c",
+        "smtp.h": "c",
+        "ftp.h": "c",
+        "dns.h": "c",
+        "tls.h": "c",
+        "tcp.h": "c",
+        "types.h": "c",
+        "ipv6.h": "c",
+        "inet.h": "c",
+        "arp.h": "c",
+        "if_arp.h": "c",
+        "telnet.h": "c"
     }
 }
